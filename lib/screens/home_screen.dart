@@ -10,14 +10,25 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int totalSeconds = 1500;
+  static const initialTime = 1500;
+  int totalSeconds = initialTime;
   bool isRunning = false;
+  int totalPomodoros = 0;
   late Timer timer;
 
   void onTick(Timer timer) {
-    setState(() {
-      totalSeconds = totalSeconds - 1;
-    });
+    if (totalSeconds == 0) {
+      setState(() {
+        totalPomodoros = totalPomodoros + 1;
+        isRunning = false;
+        totalSeconds = initialTime;
+      });
+      timer.cancel();
+    } else {
+      setState(() {
+        totalSeconds = totalSeconds - 1;
+      });
+    }
   }
 
   void onStartPressed() {
@@ -37,6 +48,15 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  String format(int seconds) {
+    var duration = Duration(seconds: seconds); // 기본 Duration 형식: 0:25:00.000000
+    // duration.toString() -> 문자열화
+    // duration.toString().split(".") -> 점(.)을 기준으로 나누기
+    // duration.toString().split(".").first -> 점(.)뒤에 부분을 버리는 용도
+    // duration.toString().split(".").first.substring(2, 7)) -> 2~6번째 값만 취함
+    return duration.toString().split(".").first.substring(2, 7);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Container(
               alignment: Alignment.bottomCenter,
               child: Text(
-                '$totalSeconds',
+                format(totalSeconds),
                 style: TextStyle(
                     color: Theme.of(context).cardColor,
                     fontSize: 90,
@@ -91,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         ),
                         Text(
-                          '0',
+                          '$totalPomodoros',
                           style: TextStyle(
                             fontSize: 60,
                             fontWeight: FontWeight.w600,
