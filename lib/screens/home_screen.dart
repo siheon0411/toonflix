@@ -48,8 +48,16 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  void onResetPressed() {
+    timer.cancel();
+    setState(() {
+      isRunning = false;
+      totalSeconds = initialTime;
+    });
+  }
+
   String format(int seconds) {
-    var duration = Duration(seconds: seconds); // 기본 Duration 형식: 0:25:00.000000
+    var duration = Duration(seconds: seconds); // Duration 형식: 0:25:00.000000
     // duration.toString() -> 문자열화
     // duration.toString().split(".") -> 점(.)을 기준으로 나누기
     // duration.toString().split(".").first -> 점(.)뒤에 부분을 버리는 용도
@@ -78,15 +86,28 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Flexible(
             flex: 3,
-            child: Center(
-              child: IconButton(
-                onPressed: isRunning ? onPausePressed : onStartPressed,
-                icon: Icon(isRunning
-                    ? Icons.pause_circle_outline
-                    : Icons.play_circle_outline),
-                iconSize: 120,
-                color: Theme.of(context).cardColor,
-              ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Center(
+                  child: IconButton(
+                    onPressed: isRunning ? onPausePressed : onStartPressed,
+                    icon: Icon(isRunning
+                        ? Icons.pause_circle_outline
+                        : Icons.play_circle_outline),
+                    iconSize: 120,
+                    color: Theme.of(context).cardColor,
+                  ),
+                ),
+                Center(
+                  child: IconButton(
+                    onPressed: onResetPressed,
+                    icon: const Icon(Icons.replay_circle_filled_outlined),
+                    iconSize: 120,
+                    color: Theme.of(context).cardColor,
+                  ),
+                ),
+              ],
             ),
           ),
           Flexible(
