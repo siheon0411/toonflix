@@ -13,7 +13,7 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: HomeScreen(),
+      home: HomeScreen(), // homescreen으로 첫 화면 실행
     );
   }
 }
