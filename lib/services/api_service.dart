@@ -26,6 +26,7 @@ class ApiService {
     throw Error();
   }
 
+  // id로 웹툰의 정보를 가져오는 메소드
   static Future<WebtoonDetailModel> getToonById(String id) async {
     final url = Uri.parse("$baseUrl/$id");
     final response = await http.get(url);
@@ -36,6 +37,7 @@ class ApiService {
     throw Error();
   }
 
+  // id로 최신 에피소드를 가져오는 메소드
   static Future<List<WebtoonEpisodeModel>> getLatestEpisodesById(
       String id) async {
     List<WebtoonEpisodeModel> episodesInstances = [];
