@@ -23,11 +23,18 @@ class _DetailScreenState extends State<DetailScreen> {
   late Future<WebtoonDetailModel> webtoon;
   late Future<List<WebtoonEpisodeModel>> episodes;
   late SharedPreferences prefs;
+  bool isLiked = false;
 
   Future initPrefs() async {
     prefs = await SharedPreferences.getInstance();
     final likedToons = prefs.getStringList('likedToons');
     if (likedToons != null) {
+      if (likedToons.contains(widget.id) == true) {
+        // initState에서 function이 호출됐더라도 setState를 호출해서 UI를 refresh 해줘야함
+        setState(() {
+          isLiked = true;
+        });
+      }
     } else {
       await prefs.setStringList('likedToons', []);
     }
@@ -43,6 +50,21 @@ class _DetailScreenState extends State<DetailScreen> {
     initPrefs();
   }
 
+  onHeartTap() async {
+    final likedToons = prefs.getStringList('likedToons');
+    if (likedToons != null) {
+      if (isLiked) {
+        likedToons.remove(widget.id);
+      } else {
+        likedToons.add(widget.id);
+      }
+      await prefs.setStringList('likedToons', likedToons);
+      setState(() {
+        isLiked = !isLiked;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -52,9 +74,9 @@ class _DetailScreenState extends State<DetailScreen> {
         foregroundColor: Colors.green,
         actions: [
           IconButton(
-              onPressed: () {},
-              icon: const Icon(
-                Icons.favorite_outline_outlined,
+              onPressed: onHeartTap,
+              icon: Icon(
+                isLiked ? Icons.favorite : Icons.favorite_outline,
               ))
         ],
         title: Text(
